@@ -607,7 +607,7 @@ Blockly.showContextMenu_ = function(e) {
       return block.instanceName;
     if (block.category === 'Procedures')
       return (block.getFieldValue('NAME') || block.getFieldValue('PROCNAME'));
-    return block.category;
+    return block.category;``
   }
 
   /**
@@ -624,14 +624,6 @@ Blockly.showContextMenu_ = function(e) {
     else if (comparatorA > comparatorB) return +1;
     else return 0;
   }
-  
-  //Function used to sort blocks by procedures or components
-   function sortByType(a){
-     if(a.category == "Components") return +1;
-     else if(a.category =="Procedures") return -1;
-     else return 0;
-   }
-   
 
   // Arranges block in layout (Horizontal or Vertical).
   function arrangeBlocks(layout) {
@@ -639,8 +631,7 @@ Blockly.showContextMenu_ = function(e) {
     var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
     // If the blocks are arranged by Category, sort the array
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
-      topblocks.sort(sortByCategory);
-      topblocks.sort(sortByType);
+      topblocks.sort();
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
