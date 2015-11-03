@@ -611,17 +611,24 @@ Blockly.showContextMenu_ = function(e) {
   }
 
   /**
-   * Function used to sort blocks by Category.
+   * Function used to sort blocks alphabetically.
    * @param {!Blockly.Block} a first block to be compared
    * @param {!Blockly.Block} b second block to be compared
    * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
    */
-  function sortByCategory(a,b) {
+  function sortByAlphabet(a,b) {
     var comparatorA = comparisonName(a).toLowerCase();
     var comparatorB = comparisonName(b).toLowerCase();
 
     if (comparatorA < comparatorB) return -1;
     else if (comparatorA > comparatorB) return +1;
+    else return 0;
+  }
+
+  //Arranges blocks by category
+  function sortByType(a,b){
+    if (block.category === 'Component' && block.instanceName) return -1;
+    else if (block.category === 'Procedures') return +1;
     else return 0;
   }
 
@@ -631,7 +638,8 @@ Blockly.showContextMenu_ = function(e) {
     var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
     // If the blocks are arranged by Category, sort the array
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
-      topblocks.sort();
+      topblocks.sort(sortByAlphabet);
+      topblocks.sort(sortByType);
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
