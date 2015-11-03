@@ -632,6 +632,22 @@ Blockly.showContextMenu_ = function(e) {
     else return 0;
   }
 
+  /**
+   //Categorizes by type and alphabetically?
+   *function sortByCategory(a,b){
+   var comparatorA = comparisonName(a).toLowerCase();
+   var comparatorB = comparisonName(b).toLowerCase();
+
+   if (comparatorA < comparatorB) sort(-1);
+   else if (comparatorA > comparatorB) sort(+1);
+   else sort(0);
+
+   if (block.category === 'Component' && block.instanceName) return -1;
+   else if (block.category === 'Procedures') return +1;
+   else return 0;
+ }
+   */
+
   // Arranges block in layout (Horizontal or Vertical).
   function arrangeBlocks(layout) {
     var SPACER = 25;
@@ -657,6 +673,10 @@ Blockly.showContextMenu_ = function(e) {
       var blkHgt = blockHW.height;
       var blkWidth = blockHW.width;
       switch (layout) {
+        //need to make a more stable layout
+        //find the widest block and set the spacer from there
+        //need to make a temporary variable that holds a spacer value for each block,
+        //i.e. blockHW.width(of the biggest block) - blockHW.width(of the current block) = SPACER value
         case Blockly.BLKS_HORIZONTAL:
           if (x < wsRight) {
             blk.moveBy(x - blkXY.x, y - blkXY.y);
