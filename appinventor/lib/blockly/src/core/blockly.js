@@ -607,16 +607,16 @@ Blockly.showContextMenu_ = function(e) {
       return block.instanceName;
     if (block.category === 'Procedures')
       return (block.getFieldValue('NAME') || block.getFieldValue('PROCNAME'));
-    return block.category;
+    return block.category;``
   }
 
   /**
-   * Function used to sort blocks by Category.
+   * Function used to sort blocks alphabetically.
    * @param {!Blockly.Block} a first block to be compared
    * @param {!Blockly.Block} b second block to be compared
    * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
    */
-  function sortByCategory(a,b) {
+  function sortByAlphabet(a,b) {
     var comparatorA = comparisonName(a).toLowerCase();
     var comparatorB = comparisonName(b).toLowerCase();
 
@@ -625,13 +625,37 @@ Blockly.showContextMenu_ = function(e) {
     else return 0;
   }
 
+  //Arranges blocks by category
+  function sortByType(a,b){
+    if (block.category === 'Component' && block.instanceName) return -1;
+    else if (block.category === 'Procedures') return +1;
+    else return 0;
+  }
+
+  /**
+   //Categorizes by type and alphabetically?
+   *function sortByCategory(a,b){
+   var comparatorA = comparisonName(a).toLowerCase();
+   var comparatorB = comparisonName(b).toLowerCase();
+
+   if (comparatorA < comparatorB) sort(-1);
+   else if (comparatorA > comparatorB) sort(+1);
+   else sort(0);
+
+   if (block.category === 'Component' && block.instanceName) return -1;
+   else if (block.category === 'Procedures') return +1;
+   else return 0;
+ }
+   */
+
   // Arranges block in layout (Horizontal or Vertical).
   function arrangeBlocks(layout) {
     var SPACER = 25;
     var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
     // If the blocks are arranged by Category, sort the array
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
-      topblocks.sort(sortByCategory);
+      topblocks.sort(sortByAlphabet);
+      topblocks.sort(sortByType);
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
@@ -649,6 +673,10 @@ Blockly.showContextMenu_ = function(e) {
       var blkHgt = blockHW.height;
       var blkWidth = blockHW.width;
       switch (layout) {
+        //need to make a more stable layout
+        //find the widest block and set the spacer from there
+        //need to make a temporary variable that holds a spacer value for each block,
+        //i.e. blockHW.width(of the biggest block) - blockHW.width(of the current block) = SPACER value
         case Blockly.BLKS_HORIZONTAL:
           if (x < wsRight) {
             blk.moveBy(x - blkXY.x, y - blkXY.y);
