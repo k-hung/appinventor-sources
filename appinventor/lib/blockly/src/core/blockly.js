@@ -599,7 +599,7 @@ Blockly.showContextMenu_ = function(e) {
    * In the case of 'Components' the comparator is the instanceName of the component if it exists
    * (it does not exist for generic components).
    * In the case of Procedures the comparator is the NAME(for definitions) or PROCNAME (for calls)
-   * @param {!Blockly.Block} the block that will be compared in the sortByCategory function
+   * @param {!Blockly.Block} the block that will be compared in the sortByAlphabets function
    * @returns {string} text to be used in the comparison
    */
   function comparisonName(block){
@@ -607,21 +607,36 @@ Blockly.showContextMenu_ = function(e) {
       return block.instanceName;
     if (block.category === 'Procedures')
       return (block.getFieldValue('NAME') || block.getFieldValue('PROCNAME'));
+    if (block.category === 'Variables')
+        return block.getFieldValue('NAME');
     return block.category;
   }
 
   /**
+   * Function used to sort blocks by Alphabets.
+   * @param {!Blockly.Block} a first block to be compared
+   * @param {!Blockly.Block} b saecond block to be compared
+   * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
+   */
+  function sortByAlphabets(a,b) {
+    var comparatorA = comparisonName(a).toLowerCase();
+    var comparatorB = comparisonName(b).toLowerCase();
+    if (comparatorA < comparatorB) return -1;
+    else if (comparatorA > comparatorB) return +1;
+    else return 0;
+  }
+  
+   /**
    * Function used to sort blocks by Category.
    * @param {!Blockly.Block} a first block to be compared
    * @param {!Blockly.Block} b second block to be compared
    * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
    */
   function sortByCategory(a,b) {
-    var comparatorA = comparisonName(a).toLowerCase();
-    var comparatorB = comparisonName(b).toLowerCase();
-
-    if (comparatorA < comparatorB) return -1;
-    else if (comparatorA > comparatorB) return +1;
+    if (a.category == 'Procedures' && b.category != 'Procedures') return -1;
+    else if (a.category != 'Procedures' && b.category == 'Procedures') return +1;
+    else if (a.category == 'Component' && b.category != 'Component') return -1;
+    else if (a.category != 'Component' && b.category == 'Component') return +1;
     else return 0;
   }
 
@@ -631,11 +646,12 @@ Blockly.showContextMenu_ = function(e) {
     var topblocks = Blockly.mainWorkspace.getTopBlocks(false);
     // If the blocks are arranged by Category, sort the array
     if (Blockly.workspace_arranged_type === Blockly.BLKS_CATEGORY){
+      topblocks.sort(sortByAlphabets);
       topblocks.sort(sortByCategory);
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
     var viewLeft = metrics.viewLeft + 5;
-    var viewTop = metrics.viewTop + 5;
+    var viewTop = metrics.viewTop + 10;
     var x = viewLeft;
     var y = viewTop;
     var wsRight = viewLeft + metrics.viewWidth;
@@ -643,14 +659,28 @@ Blockly.showContextMenu_ = function(e) {
     var maxHgt = 0;
     var maxWidth = 0;
     for (var i = 0, len = topblocks.length; i < len; i++) {
+      var prevblk = topblocks[i-1];
       var blk = topblocks[i];
+      var nxtblk = topblocks[i+1];
       var blkXY = blk.getRelativeToSurfaceXY();
       var blockHW = blk.getHeightWidth();
       var blkHgt = blockHW.height;
       var blkWidth = blockHW.width;
+      var nxtblockHW = nxtblk.getHeightWidth();
+      var nxtblkHgt = nxtblockHW.height;
+      var nxtblkWidth = nxtblockHW.width;
       switch (layout) {
         case Blockly.BLKS_HORIZONTAL:
+        topblocks.sort(sortByAlphabets);
+        topblocks.sort(sortByCategory);
           if (x < wsRight) {
+            if (blk.category === 'Component' && prevblk.category === 'Procedures' ||
+             blk.category === 'Variables' && prevblk.category === 'Component' ||
+              ) {
+              y += maxHgt + SPACER;
+            maxHgt = blkHgt;
+            x = viewLeft;
+            }
             blk.moveBy(x - blkXY.x, y - blkXY.y);
             blk.select();
             x += blkWidth + SPACER;
@@ -666,7 +696,15 @@ Blockly.showContextMenu_ = function(e) {
           }
           break;
         case Blockly.BLKS_VERTICAL:
+        topblocks.sort(sortByAlphabets);
+        topblocks.sort(sortByCategory);
           if (y < wsBottom) {
+           if (blk.category === 'Component' && prevblk.category === 'Procedures' ||
+            blk.category === 'Variables' && prevblk.category === 'Component') {
+              x += maxWidth + SPACER;
+              maxWidth = blkWidth;
+              y = viewTop;
+            }
             blk.moveBy(x - blkXY.x, y - blkXY.y);
             blk.select();
             y += blkHgt + SPACER;
@@ -684,7 +722,7 @@ Blockly.showContextMenu_ = function(e) {
       }
     }
   }
-
+  
   // Sort by Category.
   var sortOptionCat = {enabled: (Blockly.workspace_arranged_type !== Blockly.BLKS_CATEGORY)};
   sortOptionCat.text = Blockly.Msg.SORT_C;
