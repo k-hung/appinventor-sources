@@ -632,11 +632,10 @@ Blockly.showContextMenu_ = function(e) {
   * @param {!Blockly.Block} b second block to be compared
   * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
   */
+  //test
  function sortByCategory(a,b) {
-   if (a.category == 'Procedures' && b.category != 'Procedures') return -1;
-   else if (a.category != 'Procedures' && b.category == 'Procedures') return +1;
-   else if (a.category == 'Component' && b.category != 'Component') return -1;
-   else if (a.category != 'Component' && b.category == 'Component') return +1;
+   if ((a.category != b.category) && a.category =='Component' ) return -1;
+   else if ((a.category != b.category) && a.category=='Procedures') return +1;
    else return 0;
  }
 
