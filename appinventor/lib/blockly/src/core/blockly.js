@@ -608,7 +608,7 @@ Blockly.showContextMenu_ = function(e) {
     if (block.category === 'Procedures')
       return (block.getFieldValue('NAME') || block.getFieldValue('PROCNAME'));
     if (block.category === 'Variables')
-        return block.getFieldValue('NAME');
+      return block.getFieldValue('NAME');
     return block.category;
   }
 
@@ -675,8 +675,7 @@ Blockly.showContextMenu_ = function(e) {
         topblocks.sort(sortByCategory);
           if (x < wsRight) {
             if (blk.category === 'Component' && prevblk.category === 'Procedures' ||
-             blk.category === 'Variables' && prevblk.category === 'Component' ||
-              ) {
+             blk.category === 'Variables' && prevblk.category === 'Component') {
               y += maxHgt + SPACER;
             maxHgt = blkHgt;
             x = viewLeft;
