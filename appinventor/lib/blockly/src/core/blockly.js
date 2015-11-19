@@ -307,8 +307,19 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
+ var canvas = Blockly.mainWorkspace.getCanvas();
+ var ctx = canvas.getContext("2d"));
+ var canvasOffset = canvas.Offset();
+ var offsetX = canvasOffset.offsetX;
+ var offsetY = canvasOffset.offsetY;
+ var start x;
+ var start y;
+ var isDrawing=false;
 Blockly.onMouseDown_ = function(e) {
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
+  startX = parseint(e.clientX - offsetX);
+  startY = parseint(e.clientY -offsetY);
+  isDrawing = true;
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
   Blockly.hideChaff();
@@ -354,7 +365,8 @@ Blockly.onMouseDown_ = function(e) {
   } else if ((Blockly.readOnly || isTargetSvg) && Blockly.mainWorkspace.scrollbar) {
     // If the workspace is editable, only allow dragging when gripping empty
     // space.  Otherwise, allow dragging when gripping anywhere.
-    Blockly.mainWorkspace.dragMode = true;
+    //Blockly.mainWorkspace.dragMode = true;
+
     // Record the current mouse position.
     Blockly.mainWorkspace.startDragMouseX = e.clientX;
     Blockly.mainWorkspace.startDragMouseY = e.clientY;
@@ -380,6 +392,7 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
+  isDrawing = false;
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -415,6 +428,16 @@ Blockly.onMouseMove_ = function(e) {
                                         -y - metrics.contentTop);
     e.stopPropagation();
   }
+  
+  //creates cursor rectangle
+  if(isDrawing) {
+    var mouseX = parseInt(e.clientX - offsetX);
+    var mouseY = parseInt(e.clientY - offsetY);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.rect(startX, startY, mouseX - startX, mouseY - startY);
+    ctx.stroke();
+    }
 };
 
 /**
