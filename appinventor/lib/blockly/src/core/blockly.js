@@ -307,16 +307,21 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
- var canvas = Blockly.mainWorkspace.getCanvas();
- var ctx = canvas.getContext("2d"));
- var canvasOffset = canvas.Offset();
- var offsetX = canvasOffset.offsetX;
- var offsetY = canvasOffset.offsetY;
- var start x;
- var start y;
- var isDrawing=false;
+ var canvas;
+ var ctx;
+ var canvasOffset;
+ var offsetX;
+ var offsetY;
+ var startX;
+ var startY;
+ var isDrawing;
 Blockly.onMouseDown_ = function(e) {
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
+  canvas = document.getElementById("canvas");;
+  ctx = canvas.getContext("2d");
+  canvasOffset = $("#canvas").offset();
+  offsetX = canvasOffset.left;
+  offsetY = canvasOffset.top;
   startX = parseint(e.clientX - offsetX);
   startY = parseint(e.clientY -offsetY);
   isDrawing = true;
@@ -362,10 +367,10 @@ Blockly.onMouseDown_ = function(e) {
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
     Blockly.showContextMenu_(e);
-  } else if ((Blockly.readOnly || isTargetSvg) && Blockly.mainWorkspace.scrollbar) {
+  } else if ((Blockly.readOnly /*|| isTargetSvg*/) && Blockly.mainWorkspace.scrollbar) {
     // If the workspace is editable, only allow dragging when gripping empty
     // space.  Otherwise, allow dragging when gripping anywhere.
-    //Blockly.mainWorkspace.dragMode = true;
+    Blockly.mainWorkspace.dragMode = true;
 
     // Record the current mouse position.
     Blockly.mainWorkspace.startDragMouseX = e.clientX;
@@ -428,7 +433,7 @@ Blockly.onMouseMove_ = function(e) {
                                         -y - metrics.contentTop);
     e.stopPropagation();
   }
-  
+
   //creates cursor rectangle
   if(isDrawing) {
     var mouseX = parseInt(e.clientX - offsetX);
@@ -437,7 +442,13 @@ Blockly.onMouseMove_ = function(e) {
     ctx.beginPath();
     ctx.rect(startX, startY, mouseX - startX, mouseY - startY);
     ctx.stroke();
-    }
+      }
+    //incorporate that if there is svg element in rectangle then move blocks to new x, y
+    /*if(Blockly ){
+
+      }
+
+    }*/
 };
 
 /**
