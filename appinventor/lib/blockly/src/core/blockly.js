@@ -351,7 +351,7 @@ Blockly.onMouseDown_ = function(e) {
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
     Blockly.showContextMenu_(e);
-  } else if ((Blockly.readOnly || isTargetSvg) && Blockly.mainWorkspace.scrollbar) {
+  } else if ((Blockly.readOnly /*|| isTargetSvg*/) && Blockly.mainWorkspace.scrollbar) {
     // If the workspace is editable, only allow dragging when gripping empty
     // space.  Otherwise, allow dragging when gripping anywhere.
     Blockly.mainWorkspace.dragMode = true;
@@ -633,10 +633,10 @@ Blockly.showContextMenu_ = function(e) {
    * @returns {number} returns 0 if the blocks are equal, and -1 or 1 if they are not
    */
   function sortByCategory(a,b) {
-    if (a.category == 'Procedures' && b.category != 'Procedures') return -1;
+     if (a.category == 'Variables' && b.category != 'Variables') return -1;
+    else if (a.category != 'Variables' && b.category == 'Variables') return +1;
+    else if (a.category == 'Procedures' && b.category != 'Procedures') return -1;
     else if (a.category != 'Procedures' && b.category == 'Procedures') return +1;
-    else if (a.category == 'Component' && b.category != 'Component') return -1;
-    else if (a.category != 'Component' && b.category == 'Component') return +1;
     else return 0;
   }
 
@@ -661,22 +661,24 @@ Blockly.showContextMenu_ = function(e) {
     for (var i = 0, len = topblocks.length; i < len; i++) {
       var prevblk = topblocks[i-1];
       var blk = topblocks[i];
-      var nxtblk = topblocks[i+1];
       var blkXY = blk.getRelativeToSurfaceXY();
       var blockHW = blk.getHeightWidth();
       var blkHgt = blockHW.height;
       var blkWidth = blockHW.width;
-      var nxtblockHW = nxtblk.getHeightWidth();
-      var nxtblkHgt = nxtblockHW.height;
-      var nxtblkWidth = nxtblockHW.width;
-      var lastblk = topblocks[len];
+      if (i < len) {
+        var nxtblk = topblocks[i+1];
+        var nxtblkXY = nxtblk.getRelativeToSurfaceXY();
+        var nxtblockHW = nxtblk.getHeightWidth();
+        var nxtblkHgt = nxtblockHW.height;
+        var nxtblkWidth = nxtblockHW.width;
+      };
       switch (layout) {
         case Blockly.BLKS_HORIZONTAL:
         topblocks.sort(sortByAlphabets);
         topblocks.sort(sortByCategory);
           if (x < wsRight) {
-              if (blk.category == 'Component' && prevblk.category == 'Procedures' || 
-                blk.category == 'Variables' && prevblk.category == 'Component' ||
+              if (blk.category == 'Procedures' && prevblk.category == 'Variables' || 
+                blk.category == 'Component' && prevblk.category == 'Procedures' ||
                 (x+nxtblkWidth > wsRight)) {
                 y += maxHgt + SPACER;
                 maxHgt = blkHgt;
@@ -700,8 +702,8 @@ Blockly.showContextMenu_ = function(e) {
         topblocks.sort(sortByAlphabets);
         topblocks.sort(sortByCategory);
           if (y < wsBottom) {
-             if (blk.category == 'Component' && prevblk.category == 'Procedures' || 
-              blk.category == 'Variables' && prevblk.category == 'Component' ||
+              if (blk.category == 'Procedures' && prevblk.category == 'Variables' || 
+                blk.category == 'Component' && prevblk.category == 'Procedures' ||
               (y+nxtblkHgt >wsBottom)) {
                 x += maxWidth + SPACER;
                 maxWidth = blkWidth;
