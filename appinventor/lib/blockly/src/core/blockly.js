@@ -35,6 +35,7 @@ goog.require('Blockly.Instrument'); // lyn's instrumentation code
 
 // Blockly core dependencies.
 goog.require('Blockly.Block');
+goog.require('goog.graphics.CanvasGraphics');
 goog.require('Blockly.Connection');
 goog.require('Blockly.FieldAngle');
 goog.require('Blockly.FieldCheckbox');
@@ -315,11 +316,16 @@ Blockly.latestClick = { x: 0, y: 0 };
  var startX;
  var startY;
  var isDrawing;
+
+ function init (){
+   canvas = document.getElementById("Canvas");
+   ctx = canvas.getContext("2d");
+   canvasOffset = $("#Canvas").offset();
+ };
+
 Blockly.onMouseDown_ = function(e) {
+  init();
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
-  canvas = document.getElementById("canvas");;
-  ctx = canvas.getContext("2d");
-  canvasOffset = $("#canvas").offset();
   offsetX = canvasOffset.left;
   offsetY = canvasOffset.top;
   startX = parseint(e.clientX - offsetX);
