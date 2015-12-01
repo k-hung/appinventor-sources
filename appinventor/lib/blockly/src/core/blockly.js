@@ -308,29 +308,9 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
- var canvas;
- var ctx;
- var canvasOffset;
- var offsetX;
- var offsetY;
- var startX;
- var startY;
- var isDrawing;
-
- function init (){
-   canvas = document.getElementById("Canvas");
-   ctx = canvas.getContext("2d");
-   canvasOffset = $("#Canvas").offset();
- };
-
+var isDrawing;
 Blockly.onMouseDown_ = function(e) {
-  init();
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
-  offsetX = canvasOffset.left;
-  offsetY = canvasOffset.top;
-  startX = parseint(e.clientX - offsetX);
-  startY = parseint(e.clientY -offsetY);
-  isDrawing = true;
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
   Blockly.hideChaff();
@@ -338,7 +318,6 @@ Blockly.onMouseDown_ = function(e) {
   if(Blockly.Drawer && Blockly.Drawer.flyout_.autoClose) {
     Blockly.Drawer.hide();
   }
-
   // If backpack exists and clicked, open or close or show documentation (right-click)
   if (Blockly.mainWorkspace.backpack && Blockly.mainWorkspace.backpack.mouseIsOver(e)
       && Blockly.isRightButton(e))
@@ -369,6 +348,14 @@ Blockly.onMouseDown_ = function(e) {
   if (!Blockly.readOnly && Blockly.selected && isTargetSvg) {
     // Clicking on the document clears the selection.
     Blockly.selected.unselect();
+  }
+
+  if(Blockly.readOnly && !Blockly.mainworkspace.scrollbar){
+    var isDrawing = true;
+    Blockly.mainWorkspace.startDragMouseX = e.clientX;
+    Blockly.mainWorkspace.startDragMouseY = e.clientY;
+    Blockly.mainWorkspace.startDragMetrics =
+        Blockly.mainWorkspace.getMetrics();
   }
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
@@ -403,7 +390,7 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
-  isDrawing = false;
+  isDrawing=false;
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -439,22 +426,18 @@ Blockly.onMouseMove_ = function(e) {
                                         -y - metrics.contentTop);
     e.stopPropagation();
   }
+  if(isDrawing){
+    var endX = e.clientX - Blockly.mainWorkspace.startDragMouseX;
+    var endY = e.clientY - Blockly.mainWorkspace.startDragMouseY;
+    var metrics = Blockly.mainWorkspace.startDragMetrics;
+    var rect = e.getBoundingClientRect()
+    if(rect && ){ //if block.bbox >
+      //for every block select then moveby new x and y
+    }
 
-  //creates cursor rectangle
-  if(isDrawing) {
-    var mouseX = parseInt(e.clientX - offsetX);
-    var mouseY = parseInt(e.clientY - offsetY);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.rect(startX, startY, mouseX - startX, mouseY - startY);
-    ctx.stroke();
-      }
-    //incorporate that if there is svg element in rectangle then move blocks to new x, y
-    /*if(Blockly ){
+    }
+  }
 
-      }
-
-    }*/
 };
 
 /**
