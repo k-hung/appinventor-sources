@@ -308,8 +308,12 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
-var isDrawing;
+//var isDrawing;
 Blockly.onMouseDown_ = function(e) {
+  var can = document.getElementById('area');
+  var cxt = can.getContext('2d');
+  cxt.fillStyle = "#f00";
+  cxt.fillRect(50, 50, 100, 100);
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
@@ -350,13 +354,13 @@ Blockly.onMouseDown_ = function(e) {
     Blockly.selected.unselect();
   }
 
-  if(Blockly.readOnly && !Blockly.mainworkspace.scrollbar){
+  /*if(Blockly.readOnly && !Blockly.mainworkspace.scrollbar){
     var isDrawing = true;
     Blockly.mainWorkspace.startDragMouseX = e.clientX;
     Blockly.mainWorkspace.startDragMouseY = e.clientY;
     Blockly.mainWorkspace.startDragMetrics =
         Blockly.mainWorkspace.getMetrics();
-  }
+  }*/
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
     Blockly.showContextMenu_(e);
@@ -425,17 +429,7 @@ Blockly.onMouseMove_ = function(e) {
     Blockly.mainWorkspace.scrollbar.set(-x - metrics.contentLeft,
                                         -y - metrics.contentTop);
     e.stopPropagation();
-  }
-  if(isDrawing){
-    var endX = e.clientX - Blockly.mainWorkspace.startDragMouseX;
-    var endY = e.clientY - Blockly.mainWorkspace.startDragMouseY;
-    var metrics = Blockly.mainWorkspace.startDragMetrics;
-    var rect = e.getBoundingClientRect()
-    if(rect && ){ //if block.bbox >
-      //for every block select then moveby new x and y
-    }
 
-    }
   }
 
 };
