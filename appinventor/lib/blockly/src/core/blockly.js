@@ -650,8 +650,8 @@ Blockly.showContextMenu_ = function(e) {
       topblocks.sort(sortByCategory);
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
-    var viewLeft = metrics.viewLeft + 5;
-    var viewTop = metrics.viewTop + 5;
+    var viewLeft = metrics.viewLeft + 50;
+    var viewTop = metrics.viewTop + 50;
     var x = viewLeft;
     var y = viewTop;
     var wsRight = viewLeft + metrics.viewWidth;
@@ -665,13 +665,6 @@ Blockly.showContextMenu_ = function(e) {
       var blockHW = blk.getHeightWidth();
       var blkHgt = blockHW.height;
       var blkWidth = blockHW.width;
-      var nxtblk = topblocks[i+1];
-      var nxtblockHW = nxtblk.getHeightWidth();
-      var nxtblkHgt = nxtblockHW.height;
-      var nxtblkWidth = nxtblockHW.width;
-      if (i==len){
-        nxtblk = null;
-      }
       switch (layout) {
         case Blockly.BLKS_HORIZONTAL:
         topblocks.sort(sortByAlphabets);
@@ -680,7 +673,7 @@ Blockly.showContextMenu_ = function(e) {
               if (blk.category == 'Procedures' && prevblk.category == 'Variables' || 
                 blk.category == 'Component' && prevblk.category == 'Procedures' ||
                 blk.category == 'Component' && prevblk.category == 'Variables' || 
-                (x+nxtblkWidth > wsRight)) {
+                (x + blkWidth > wsRight)) {
                 y += maxHgt + SPACER;
                 maxHgt = blkHgt;
                 x = viewLeft;
@@ -706,7 +699,7 @@ Blockly.showContextMenu_ = function(e) {
               if (blk.category == 'Procedures' && prevblk.category == 'Variables' || 
                 blk.category == 'Component' && prevblk.category == 'Procedures' ||
                 blk.category == 'Component' && prevblk.category == 'Variables' || 
-              (y+nxtblkHgt >wsBottom)) {
+              (y + blkHgt >wsBottom)) {
                 x += maxWidth + SPACER;
                 maxWidth = blkWidth;
                 y = viewTop;
