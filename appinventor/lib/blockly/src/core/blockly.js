@@ -310,10 +310,6 @@ Blockly.latestClick = { x: 0, y: 0 };
  */
 //var isDrawing;
 Blockly.onMouseDown_ = function(e) {
-  var can = document.getElementById('area');
-  var cxt = can.getContext('2d');
-  cxt.fillStyle = "#f00";
-  cxt.fillRect(50, 50, 100, 100);
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
