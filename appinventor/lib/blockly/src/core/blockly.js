@@ -650,8 +650,8 @@ Blockly.showContextMenu_ = function(e) {
       topblocks.sort(sortByCategory);
     }
     var metrics = Blockly.mainWorkspace.getMetrics();
-    var viewLeft = metrics.viewLeft + 50;
-    var viewTop = metrics.viewTop + 50;
+    var viewLeft = metrics.viewLeft + 25;
+    var viewTop = metrics.viewTop + 25;
     var x = viewLeft;
     var y = viewTop;
     var wsRight = viewLeft + metrics.viewWidth;
