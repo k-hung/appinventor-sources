@@ -8,6 +8,7 @@
     <link type="text/css" rel="stylesheet" href="media/blockly.css">
     <link type="text/css" rel="stylesheet" href="closure-library/closure/goog/css/dialog.css">
     <script type="text/javascript" src="blockly-@GUID@.js"></script>
+    <script type="text/javascript" src="C:\appinventor-sources\appinventor\lib\raphael\raphael.js"></script>
 
     <style>
       html, body {
@@ -74,9 +75,10 @@
         window.parent.BlocklyPanel_checkWarningState(formName);
       }
     </script>
-    <canvas id="area" width="1089px" height="473px" ></canvas>
+
   </head>
   <body id="ai_frame" onload="init()">
+  <canvas id="area" width=ai_frame.width height=ai_frame.height ></canvas>
     <div id="ai_type_block" style="display:none">
       <p>
         <input id="ac_input_text" />
