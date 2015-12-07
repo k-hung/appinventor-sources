@@ -65,6 +65,7 @@ goog.require('goog.ui.tree.TreeControl');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Path to Blockly's directory.  Can be relative, absolute, or remote.
  * Used for loading additional resources.
@@ -309,8 +310,25 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @private
  */
 //var isDrawing;
+var mat;
+var paper;
+
 Blockly.onMouseDown_ = function(e) {
-  
+  //try just with path ../lib
+  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
+  var circle = paper.circle(75, 75, 50);
+  var rect = paper.rect(150, 150, 50, 50);
+  var set = paper.set();
+
+  set.push(circle, rect);
+  set.attr({
+    fill: 'red',
+    stroke: 0
+  });
+//the box we're going to draw to track the selection
+  var box;
+//set that will receive the selected items
+  var selections = paper.set();
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
@@ -391,6 +409,10 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
+  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
+  paper = Raphael(0, 0, '100%', '100%');
+  //make an object in the background on which to attach drag events
+  mat = paper.rect(0, 0, paper.width, paper.height).attr("fill", "#FFF");
   isDrawing=false;
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
@@ -408,6 +430,7 @@ Blockly.onMouseUp_ = function(e) {
  * @private
  */
 Blockly.onMouseMove_ = function(e) {
+  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
   if (Blockly.mainWorkspace.dragMode) {
     Blockly.removeAllRanges();
     var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
