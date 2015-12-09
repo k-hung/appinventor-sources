@@ -105,6 +105,11 @@
         <include name="closure-library/**/*"/>
       </fileset>
     </copy>
+    <copy todir="${build.war.dir}/">
+      <fileset dir="${lib.dir}">
+        <include name="raphael/**/*"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="CopyBlocklyToBuildWar"

@@ -72,7 +72,14 @@
         window.parent.BlocklyPanel_initBlocksArea(formName);
         window.parent.BlocklyPanel_checkWarningState(formName);
       }
+
+    //loads .js file to html
+    /* function includeJS(incFile) {
+        document.write('<script type="text/javascript" src="'+ incFile+'"><\/script>');
+      }*/
+
     </script>
+
   </head>
   <body id="ai_frame" onload="init()">
     <div id="ai_type_block" style="display:none">

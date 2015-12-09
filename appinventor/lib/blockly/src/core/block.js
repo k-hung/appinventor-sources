@@ -2138,4 +2138,3 @@ Blockly.Block.prototype.renderDown = function() {
   }
   // [lyn, 04/08/14] Because renderDown is recursive, doesn't make sense to track its time here.
 };
-

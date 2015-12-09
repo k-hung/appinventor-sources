@@ -35,6 +35,7 @@ goog.require('Blockly.Instrument'); // lyn's instrumentation code
 
 // Blockly core dependencies.
 goog.require('Blockly.Block');
+goog.require('goog.graphics.CanvasGraphics');
 goog.require('Blockly.Connection');
 goog.require('Blockly.FieldAngle');
 goog.require('Blockly.FieldCheckbox');
@@ -53,6 +54,7 @@ goog.require('Blockly.WidgetDiv');
 goog.require('Blockly.Workspace');
 goog.require('Blockly.inject');
 goog.require('Blockly.utils');
+goog.require('Blockly.Raphael')
 
 // Closure dependencies.
 goog.require('goog.color');
@@ -62,6 +64,7 @@ goog.require('goog.string');
 goog.require('goog.ui.ColorPicker');
 goog.require('goog.ui.tree.TreeControl');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -250,6 +253,13 @@ Blockly.COLLAPSE_CHARS = 30;
 Blockly.mainWorkspace = null;
 
 /**
+ * The raphael paper (defined by inject.js).
+ * @type {Blockly.Raphael}
+ */
+Blockly.paper = null;
+
+
+/**
  * Contents of the local clipboard.
  * @type {Element}
  * @private
@@ -307,7 +317,23 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
+//var isDrawing;
+
 Blockly.onMouseDown_ = function(e) {
+  //Blockly.createRaphael();
+  var circle = Blockly.paper.circle(75, 75, 50);
+  var rect = Blockly.paper.rect(150, 150, 50, 50);
+  var set = Blockly.paper.set();
+
+  set.push(circle, rect);
+  set.attr({
+    fill: 'red',
+    stroke: 0
+  });
+//the box we're going to draw to track the selection
+  //var box;
+ //set that will receive the selected items
+  var selections = Blockly.paper.set();
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
@@ -316,7 +342,6 @@ Blockly.onMouseDown_ = function(e) {
   if(Blockly.Drawer && Blockly.Drawer.flyout_.autoClose) {
     Blockly.Drawer.hide();
   }
-
   // If backpack exists and clicked, open or close or show documentation (right-click)
   if (Blockly.mainWorkspace.backpack && Blockly.mainWorkspace.backpack.mouseIsOver(e)
       && Blockly.isRightButton(e))
@@ -348,6 +373,14 @@ Blockly.onMouseDown_ = function(e) {
     // Clicking on the document clears the selection.
     Blockly.selected.unselect();
   }
+
+  /*if(Blockly.readOnly && !Blockly.mainworkspace.scrollbar){
+    var isDrawing = true;
+    Blockly.mainWorkspace.startDragMouseX = e.clientX;
+    Blockly.mainWorkspace.startDragMouseY = e.clientY;
+    Blockly.mainWorkspace.startDragMetrics =
+        Blockly.mainWorkspace.getMetrics();
+  }*/
   if (e.target == Blockly.svg && Blockly.isRightButton(e)) {
     // Right-click.
     Blockly.showContextMenu_(e);
@@ -355,6 +388,7 @@ Blockly.onMouseDown_ = function(e) {
     // If the workspace is editable, only allow dragging when gripping empty
     // space.  Otherwise, allow dragging when gripping anywhere.
     Blockly.mainWorkspace.dragMode = true;
+
     // Record the current mouse position.
     Blockly.mainWorkspace.startDragMouseX = e.clientX;
     Blockly.mainWorkspace.startDragMouseY = e.clientY;
@@ -380,6 +414,7 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
+  //isDrawing=false;
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -414,7 +449,9 @@ Blockly.onMouseMove_ = function(e) {
     Blockly.mainWorkspace.scrollbar.set(-x - metrics.contentLeft,
                                         -y - metrics.contentTop);
     e.stopPropagation();
+
   }
+
 };
 
 /**
@@ -1069,13 +1106,26 @@ Blockly.removeChangeListener = function(bindData) {
  * @return {!Blockly.Workspace} The main workspace.
  */
 Blockly.getMainWorkspace = function() {
+  //includeJS('raphael.js');
   return Blockly.mainWorkspace;
+};
+//Creates
+
+Blockly.getRaphael = function(){
+  //make an object in the background on which to attach drag events
+  return Blockly.paper;
+};
+
+Blockly.createRaphaelMat = function(){
+  Blockly.mat = Blockly.paper.rect(0, 0, paper.width, paper.height);
+  return Blockly.mat;
 };
 
 // Export symbols that would otherwise be renamed by Closure compiler.
 if (!window['Blockly']) {
   window['Blockly'] = {};
 }
+window['Blockly']['createRaphael'] = Blockly.createRaphael;
 window['Blockly']['getMainWorkspace'] = Blockly.getMainWorkspace;
 window['Blockly']['addChangeListener'] = Blockly.addChangeListener;
 window['Blockly']['removeChangeListener'] = Blockly.removeChangeListener;

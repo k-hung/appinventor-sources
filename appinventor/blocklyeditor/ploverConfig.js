@@ -49,6 +49,7 @@
     '../lib/blockly/src/core/mutator.js',
     '../lib/blockly/src/core/names.js',
     '../lib/blockly/src/core/procedures.js',
+    '../lib/blockly/src/core/raphael.js',
     '../lib/blockly/src/core/realtime.js',
     '../lib/blockly/src/core/realtime-client-utils.js',
     '../lib/blockly/src/core/scrollbar.js',

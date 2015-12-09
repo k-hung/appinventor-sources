@@ -114,6 +114,7 @@
       <include name="${components.pkg}/annotations/*.java" />
       <include name="${components.pkg}/runtime/**/*.java" />
       <classpath>
+        <pathelement location="${lib.dir}/raphael" />
         <pathelement location="${local.build.dir}/HtmlEntities.jar" />
         <pathelement location="${public.build.dir}/CommonConstants.jar" />
         <pathelement location="${build.dir}/common/CommonVersion.jar" />
@@ -216,6 +217,7 @@
              includeantruntime="false">
         <include name="${components.pkg}/runtime/*.java" />
         <classpath>
+          <pathelement location="${lib.dir}/raphael" />
           <pathelement location="${public.build.dir}/AndroidRuntime.jar" />
           <pathelement location="${local.build.dir}/HtmlEntities.jar" />
           <pathelement location="${public.build.dir}/CommonConstants.jar" />
