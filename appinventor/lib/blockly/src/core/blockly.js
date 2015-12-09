@@ -54,6 +54,7 @@ goog.require('Blockly.WidgetDiv');
 goog.require('Blockly.Workspace');
 goog.require('Blockly.inject');
 goog.require('Blockly.utils');
+goog.require('Blockly.Raphael')
 
 // Closure dependencies.
 goog.require('goog.color');
@@ -252,6 +253,13 @@ Blockly.COLLAPSE_CHARS = 30;
 Blockly.mainWorkspace = null;
 
 /**
+ * The raphael paper (defined by inject.js).
+ * @type {Blockly.Raphael}
+ */
+Blockly.paper = null;
+
+
+/**
  * Contents of the local clipboard.
  * @type {Element}
  * @private
@@ -310,15 +318,12 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @private
  */
 //var isDrawing;
-var mat;
-var paper;
 
 Blockly.onMouseDown_ = function(e) {
-  //try just with path ../lib
-  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
-  var circle = paper.circle(75, 75, 50);
-  var rect = paper.rect(150, 150, 50, 50);
-  var set = paper.set();
+  //Blockly.createRaphael();
+  var circle = Blockly.paper.circle(75, 75, 50);
+  var rect = Blockly.paper.rect(150, 150, 50, 50);
+  var set = Blockly.paper.set();
 
   set.push(circle, rect);
   set.attr({
@@ -326,9 +331,9 @@ Blockly.onMouseDown_ = function(e) {
     stroke: 0
   });
 //the box we're going to draw to track the selection
-  var box;
-//set that will receive the selected items
-  var selections = paper.set();
+  //var box;
+ //set that will receive the selected items
+  var selections = Blockly.paper.set();
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
@@ -409,11 +414,7 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
-  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
-  paper = Raphael(0, 0, '100%', '100%');
-  //make an object in the background on which to attach drag events
-  mat = paper.rect(0, 0, paper.width, paper.height).attr("fill", "#FFF");
-  isDrawing=false;
+  //isDrawing=false;
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -430,7 +431,6 @@ Blockly.onMouseUp_ = function(e) {
  * @private
  */
 Blockly.onMouseMove_ = function(e) {
-  document.write('<script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>');
   if (Blockly.mainWorkspace.dragMode) {
     Blockly.removeAllRanges();
     var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
@@ -1069,13 +1069,26 @@ Blockly.removeChangeListener = function(bindData) {
  * @return {!Blockly.Workspace} The main workspace.
  */
 Blockly.getMainWorkspace = function() {
+  //includeJS('raphael.js');
   return Blockly.mainWorkspace;
+};
+//Creates
+
+Blockly.getRaphael = function(){
+  //make an object in the background on which to attach drag events
+  return Blockly.paper;
+};
+
+Blockly.createRaphaelMat = function(){
+  Blockly.mat = Blockly.paper.rect(0, 0, paper.width, paper.height);
+  return Blockly.mat;
 };
 
 // Export symbols that would otherwise be renamed by Closure compiler.
 if (!window['Blockly']) {
   window['Blockly'] = {};
 }
+window['Blockly']['createRaphael'] = Blockly.createRaphael;
 window['Blockly']['getMainWorkspace'] = Blockly.getMainWorkspace;
 window['Blockly']['addChangeListener'] = Blockly.addChangeListener;
 window['Blockly']['removeChangeListener'] = Blockly.removeChangeListener;

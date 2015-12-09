@@ -277,6 +277,7 @@ Blockly.createDom_ = function(container) {
       Blockly.setMainWorkspaceMetrics_);
   svg.appendChild(Blockly.mainWorkspace.createDom());
   Blockly.mainWorkspace.maxBlocks = Blockly.maxBlocks;
+  Blockly.paper = Blockly.createRaphael();
 
   if (!Blockly.readOnly) {
     // Determine if there needs to be a category tree, or a simple list of
@@ -365,6 +366,10 @@ Blockly.createDom_ = function(container) {
   document.body.appendChild(Blockly.WidgetDiv.DIV);
 };
 
+Blockly.createRaphael = function(){
+  var paper = new Raphael(0, 0, '100%', '100%');
+  return paper;
+};
 
 /**
  * Initialize Blockly with various handlers.

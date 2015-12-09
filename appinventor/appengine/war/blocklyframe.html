@@ -8,7 +8,6 @@
     <link type="text/css" rel="stylesheet" href="media/blockly.css">
     <link type="text/css" rel="stylesheet" href="closure-library/closure/goog/css/dialog.css">
     <script type="text/javascript" src="blockly-@GUID@.js"></script>
-    <script type="text/javascript" src="C:/appinventor-sources/appinventor/lib/raphael/raphael.js"></script>
     <style>
       html, body {
       background-color: #fff;
@@ -73,6 +72,12 @@
         window.parent.BlocklyPanel_initBlocksArea(formName);
         window.parent.BlocklyPanel_checkWarningState(formName);
       }
+
+    //loads .js file to html
+    /* function includeJS(incFile) {
+        document.write('<script type="text/javascript" src="'+ incFile+'"><\/script>');
+      }*/
+
     </script>
 
   </head>
