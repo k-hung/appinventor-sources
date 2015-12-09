@@ -324,31 +324,35 @@ var box;
 var isDrawing;
 var set;
 var selections;
+var circle;
+var rect;
 
 Blockly.onMouseDown_ = function(e) {
-  //Blockly.createRaphael();
   if((paper !=null) && (mat !=null)){
-    var circle = paper.circle(75, 75, 50);
-    var rect = paper.rect(150, 150, 50, 50);
-    set = paper.set();
-    set.push(circle, rect);
-    set.attr({
-      fill: 'red',
-      stroke: 0
-    });
- //set that will receive the selected items
-    selections = paper.set();
   }else{
     paper = new Raphael(0, 0, '100%', '100%');
-    mat = paper.rect(0, 0, paper.width, paper.height);
+    mat = paper.rect(0, 0, paper.width, paper.height).attr("fill", "#FFF");
   }
+  //Blockly.createRaphael();
+  circle = paper.circle(75, 75, 50);
+  rect = paper.rect(150, 150, 50, 50);
+  set = paper.set();
+  set.push(circle, rect);
+  set.attr({
+    fill: 'red',
+    stroke: 0
+  });
+//set that will receive the selected items
+  selections = paper.set();
+
+  box = paper.rect(e.clientX, e.clientY, 0, 0).attr("stroke", "#000000");
 
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
-  isDrawing=false;
-  if(isDrawing == false) {
-    box = paper.rect(e.clientX, e.clientY, 0, 0).attr("stroke", "#9999FF");
-    isDrawing == true;
-  }
+  isDrawing = false;
+  //if(isDrawing === false) {
+
+    //isDrawing === true;
+  //}
 
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
@@ -429,11 +433,12 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
-  if(isDrawing) {
+  //if(isDrawing) {
   //get the bounds of the selections
     var bounds = box.getBBox();
     box.remove();
-    reset();
+    selections = paper.set();
+    set.attr("opacity", 1);
     console.log(bounds);
     for (var c in set.items) {
        // Here, we want to get the x,y vales of each object
@@ -454,8 +459,8 @@ Blockly.onMouseUp_ = function(e) {
     }
     selections = paper.set();
     set.attr("opacity", 1);
-    isDrawing=false;
-  }
+    //isDrawing = false;
+  //}
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -472,7 +477,7 @@ Blockly.onMouseUp_ = function(e) {
  * @private
  */
 Blockly.onMouseMove_ = function(e) {
-  if(isDrawing){
+  //if(isDrawing){
     var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
     var dy = e.clientY - Blockly.mainWorkspace.startDragMouseY;
     var xoffset = 0,
@@ -488,7 +493,7 @@ Blockly.onMouseMove_ = function(e) {
     box.transform("T" + xoffset + "," + yoffset);
     box.attr("width", dx);
     box.attr("height", dy);
-  }
+  //}
   if (Blockly.mainWorkspace.dragMode) {
     Blockly.removeAllRanges();
     var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
