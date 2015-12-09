@@ -36,6 +36,7 @@ goog.require('goog.dom');
  * @param {Object} opt_options Optional dictionary of options.
  */
 Blockly.inject = function(container, opt_options) {
+
   // Verify that the container is in document.
   if (!goog.dom.contains(document, container)) {
     throw 'Error: container is not in current document.';
@@ -45,6 +46,7 @@ Blockly.inject = function(container, opt_options) {
   }
   var startUi = function() {
     Blockly.createDom_(container);
+    //Blockly.paper = Blockly.createRaphael();
     Blockly.init_();
   };
   if (Blockly.enableRealtime) {
@@ -152,12 +154,18 @@ Blockly.parseOptions_ = function(options) {
   Blockly.realtimeOptions = realtimeOptions;
 };
 
+/*Blockly.createRaphael = function(){
+  var paper = new Raphael(0, 0, '100%', '100%');
+  return paper;
+};*/
+
 /**
  * Create the SVG image.
  * @param {!Element} container Containing element.
  * @private
  */
 Blockly.createDom_ = function(container) {
+
   // Sadly browsers (Chrome vs Firefox) are currently inconsistent in laying
   // out content in RTL mode.  Therefore Blockly forces the use of LTR,
   // then manually positions content in RTL as needed.
@@ -277,7 +285,7 @@ Blockly.createDom_ = function(container) {
       Blockly.setMainWorkspaceMetrics_);
   svg.appendChild(Blockly.mainWorkspace.createDom());
   Blockly.mainWorkspace.maxBlocks = Blockly.maxBlocks;
-  Blockly.paper = Blockly.createRaphael();
+
 
   if (!Blockly.readOnly) {
     // Determine if there needs to be a category tree, or a simple list of
@@ -366,16 +374,14 @@ Blockly.createDom_ = function(container) {
   document.body.appendChild(Blockly.WidgetDiv.DIV);
 };
 
-Blockly.createRaphael = function(){
-  var paper = new Raphael(0, 0, '100%', '100%');
-  return paper;
-};
+
 
 /**
  * Initialize Blockly with various handlers.
  * @private
  */
 Blockly.init_ = function() {
+
   // Bind temporary hooks that preload the sounds.
   var soundBinds = [];
   var unbindSounds = function() {

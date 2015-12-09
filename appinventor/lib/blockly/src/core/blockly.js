@@ -254,9 +254,9 @@ Blockly.mainWorkspace = null;
 
 /**
  * The raphael paper (defined by inject.js).
- * @type {Blockly.Raphael}
+ * @type {Blockly.raphael}
  */
-Blockly.paper = null;
+//Blockly.paper = null;
 
 
 /**
@@ -317,24 +317,39 @@ Blockly.latestClick = { x: 0, y: 0 };
  * @param {!Event} e Mouse down event.
  * @private
  */
-//var isDrawing;
+
+var mat;
+var paper;
+var box;
+var isDrawing;
+var set;
+var selections;
 
 Blockly.onMouseDown_ = function(e) {
   //Blockly.createRaphael();
-  var circle = Blockly.paper.circle(75, 75, 50);
-  var rect = Blockly.paper.rect(150, 150, 50, 50);
-  var set = Blockly.paper.set();
-
-  set.push(circle, rect);
-  set.attr({
-    fill: 'red',
-    stroke: 0
-  });
-//the box we're going to draw to track the selection
-  //var box;
+  if((paper !=null) && (mat !=null)){
+    var circle = paper.circle(75, 75, 50);
+    var rect = paper.rect(150, 150, 50, 50);
+    set = paper.set();
+    set.push(circle, rect);
+    set.attr({
+      fill: 'red',
+      stroke: 0
+    });
  //set that will receive the selected items
-  var selections = Blockly.paper.set();
+    selections = paper.set();
+  }else{
+    paper = new Raphael(0, 0, '100%', '100%');
+    mat = paper.rect(0, 0, paper.width, paper.height);
+  }
+
   Blockly.latestClick = { x: e.clientX, y: e.clientY }; // Might be needed?
+  isDrawing=false;
+  if(isDrawing == false) {
+    box = paper.rect(e.clientX, e.clientY, 0, 0).attr("stroke", "#9999FF");
+    isDrawing == true;
+  }
+
   Blockly.svgResize();
   Blockly.terminateDrag_();  // In case mouse-up event was lost.
   Blockly.hideChaff();
@@ -414,7 +429,33 @@ Blockly.onMouseDown_ = function(e) {
  * @private
  */
 Blockly.onMouseUp_ = function(e) {
-  //isDrawing=false;
+  if(isDrawing) {
+  //get the bounds of the selections
+    var bounds = box.getBBox();
+    box.remove();
+    reset();
+    console.log(bounds);
+    for (var c in set.items) {
+       // Here, we want to get the x,y vales of each object
+       // regardless of what sort of shape it is.
+       // But rect uses rx and ry, circle uses cx and cy, etc
+       // So we'll see if the bounding boxes intercept instead
+
+      var mybounds = set[c].getBBox();
+       //do bounding boxes overlap?
+       //is one of this object's x extremes between the selection's xe xtremes?
+      if (mybounds.x >= bounds.x && mybounds.x <= bounds.x2 || mybounds.x2 >= bounds.x && mybounds.x2 <= bounds.x2) {
+           //same for y
+        if (mybounds.y >= bounds.y && mybounds.y <= bounds.y2 || mybounds.y2 >= bounds.y && mybounds.y2 <= bounds.y2) {
+               selections.push(set[c]);
+        }
+      }
+    selections.attr("opacity", 0.5);
+    }
+    selections = paper.set();
+    set.attr("opacity", 1);
+    isDrawing=false;
+  }
   Blockly.setCursorHand_(false);
   Blockly.mainWorkspace.dragMode = false;
 
@@ -431,6 +472,23 @@ Blockly.onMouseUp_ = function(e) {
  * @private
  */
 Blockly.onMouseMove_ = function(e) {
+  if(isDrawing){
+    var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
+    var dy = e.clientY - Blockly.mainWorkspace.startDragMouseY;
+    var xoffset = 0,
+        yoffset = 0;
+    if (dx < 0) {
+        xoffset = dx;
+        dx = -1 * dx;
+    }
+    if (dy < 0) {
+        yoffset = dy;
+        dy = -1 * dy;
+    }
+    box.transform("T" + xoffset + "," + yoffset);
+    box.attr("width", dx);
+    box.attr("height", dy);
+  }
   if (Blockly.mainWorkspace.dragMode) {
     Blockly.removeAllRanges();
     var dx = e.clientX - Blockly.mainWorkspace.startDragMouseX;
@@ -1109,23 +1167,21 @@ Blockly.getMainWorkspace = function() {
   //includeJS('raphael.js');
   return Blockly.mainWorkspace;
 };
-//Creates
 
-Blockly.getRaphael = function(){
+/*Blockly.getRaphael = function(){
   //make an object in the background on which to attach drag events
   return Blockly.paper;
 };
 
 Blockly.createRaphaelMat = function(){
-  Blockly.mat = Blockly.paper.rect(0, 0, paper.width, paper.height);
-  return Blockly.mat;
-};
+  return Blockly.getRaphael().rect(0, 0, paper.width, paper.height);
+};*/
 
 // Export symbols that would otherwise be renamed by Closure compiler.
 if (!window['Blockly']) {
   window['Blockly'] = {};
 }
-window['Blockly']['createRaphael'] = Blockly.createRaphael;
+//window['Blockly']['getRaphael'] = Blockly.getRaphael;
 window['Blockly']['getMainWorkspace'] = Blockly.getMainWorkspace;
 window['Blockly']['addChangeListener'] = Blockly.addChangeListener;
 window['Blockly']['removeChangeListener'] = Blockly.removeChangeListener;
